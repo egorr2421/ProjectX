@@ -1,27 +1,15 @@
+import * as UserRepository from '../repository/UsersRepository';
+
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 
-var {Pool, Client} = require('pg');
-var pool = new Pool({
-    user: 'postgres',
-    host: '127.0.0.1',
-    database: 'course_pr',
-    password: '1234',
-    port: 5432,
-});
-// /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('main/index.ejs', {title: "Main"});
 });
 
-
 router.get('/login', function (req, res, next) {
-    pool.query('SELECT * FROM users ', function (err, res) {
-        console.log(err);
-        console.log(res.rows);
-        console.log(!undefined);
-    });
+    console.info(UserRepository.findAll);
     res.render('login/index.ejs', {title: "login"});
 });
 router.post('/login', function (req, res, next) {
