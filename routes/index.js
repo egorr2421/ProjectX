@@ -33,8 +33,8 @@ router.post('/register', function (req, res, next) {
   UserRepository.findByEmailOrLogin(req.body.email
       || req.body.login).then(value => {
         if(value == null || value.length == null || value.length == 0) {
-          const sessionId = UserRepository.insert(req.body.email.toLowerCase(),
-              req.body.pass, req.body.avatar || "", req.body.login.toLowerCase());
+          const sessionId = UserRepository.insert(req.body.login.toLowerCase(),
+              req.body.pass, req.body.avatar || "", req.body.email.toLowerCase());
           createCookie(res, sessionId);
           res.status(ResponseStatus.CREATED);
         } else {
