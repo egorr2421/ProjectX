@@ -1,5 +1,4 @@
-import * as UserRepository from '../repository/UsersRepository';
-
+const UserRepository = require('../repository/UsersRepository');
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();

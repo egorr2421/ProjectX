@@ -25,7 +25,7 @@ const User = sequelize.define('user', {
     email: {
         type: Sequelize.STRING,
         notNull: true,
-        isEmail: trye
+        isEmail: true
     },
     state: {
         type: Sequelize.STRING,
@@ -39,3 +39,5 @@ const User = sequelize.define('user', {
         }
     }
 });
+
+module.exports = User;

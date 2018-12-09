@@ -2,11 +2,10 @@
 
 const User = require('../model/User');
 
-
-export function findAll() {
+module.exports.method = function findAll() {
     return User.findAll
 }
 
-export function findById(userId) {
+module.exports.method = function findById(userId) {
     User.findById(userId);
 }
