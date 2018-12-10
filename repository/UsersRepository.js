@@ -1,11 +1,15 @@
-'use strict'
+'use strict';
 
 const User = require('../model/User');
 
-module.exports.method = function findAll() {
+module.exports.findAll = function () {
     return User.findAll
-}
+};
 
-module.exports.method = function findById(userId) {
+module.exports.findById = function (userId) {
     User.findById(userId);
-}
+};
+
+module.exports.user = function () {
+    return User;
+};
