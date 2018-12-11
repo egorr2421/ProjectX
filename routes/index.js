@@ -12,6 +12,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/login', function (req, res, next) {
   res.render('login/index.ejs', {title: "login"});
+
 });
 
 router.post('/login', function (req, res, next) {

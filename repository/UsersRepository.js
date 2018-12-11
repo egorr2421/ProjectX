@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const User = require('../model/User');
 const Op = require('sequelize').Op;
@@ -24,5 +24,3 @@ module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByEmailOrLogin = findByEmailOrLogin;
 module.exports.insert = insert;
-
-
