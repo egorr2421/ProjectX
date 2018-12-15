@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "migrate": "flyway -X -configFiles=conf/flyway.conf migrate",
+    "migrate": "cd flyway-5.2.4 && flyway -X -configFiles=conf/flyway.conf migrate && cd ..",
     "start": "npm run migrate && node ./bin/www"
   },
   "dependencies": {

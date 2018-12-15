@@ -5,22 +5,30 @@ const Op = require('sequelize').Op;
 
 const findAll = User.findAll;
 const findById = User.findById;
-const findByEmailOrLogin = (value) => User.findAll({
+const findByEmailOrLogin = (value) => User.findOne({
     where: {
         [Op.or]: [{email: value.toLowerCase()}, {login: value.toLowerCase()}]
     }
 });
-const insert = (login, password, avatar, email) => {
+const findByEmailAndLogin = (email,login) => User.findOne({
+    where: {
+        [Op.or]: [{email: email.toLowerCase()}, {login: login.toLowerCase()}]
+    }
+});
+const findBySessionId = (value) => User.findOne({
+    where: {
+        sessionId:value
+    }
+});
+const insert = (login, password, avatar, email) =>
     User.build({login: login, password: password, avatar: avatar, email: email})
-        .save()
-        .then((user) => user.tokenId)
-        .catch((error) => {
-            console.error(error);
-        }
-    );
-}
+        .save();
+
+
 
 module.exports.findAll = findAll;
 module.exports.findById = findById;
 module.exports.findByEmailOrLogin = findByEmailOrLogin;
 module.exports.insert = insert;
+module.exports.findBySessionId = findBySessionId;
+module.exports.findByEmailAndLogin = findByEmailAndLogin;

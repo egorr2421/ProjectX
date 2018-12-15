@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const UserRepository = require('../repository/UsersRepository');
 const ResponseStatus = require('./response/ResponseStatus')
@@ -7,54 +7,89 @@ var fs = require('fs');
 var router = express.Router();
 
 router.get('/', function (req, res, next) {
-  res.render('main/index.ejs', {title: "Main"});
+    UserRepository.findBySessionId(req.cookies.session_id)
+        .then(value => {
+            if (value === null) {
+                res.redirect('/login');
+                return null;
+            }
+            if (req.cookies.session_id === value.dataValues.sessionId) {
+                console.log("+++");
+                res.render('main/index.ejs', {title: "Main"});
+            } else {
+                res.redirect('/login');
+            }
+        });
 });
 
 router.get('/login', function (req, res, next) {
-  res.render('login/index.ejs', {title: "login"});
+    res.clearCookie('session_id');
+    res.render('login/index.ejs', {title: "login"});
 
 });
 
 router.post('/login', function (req, res, next) {
-  const user = UserRepository.findByEmailOrLogin(req.body.email
-      || req.body.login);
-  if (user.password !== req.body.password) {
-    res.status(ResponseStatus.UNATHORIZED);
-    //TODO: res.render(error)
-  }
-  res.render('login/index.ejs', {title: "login"});
+    const user = UserRepository.findByEmailOrLogin(req.body.login)
+        .then((user) => {
+            if (user === null) {
+                res.redirect('/login');
+            } else {
+                if (user.dataValues.password !== req.body.pass) {
+                    res.status(ResponseStatus.UNATHORIZED);
+                    //TODO: res.render(error)
+                } else {
+                    createCookie(res, user.dataValues.sessionId);
+                    res.redirect('/');
+                    // redirect
+                }
+                //res.render('login/index.ejs', {title: "login"});
+            }
+        });
 });
 
 router.get('/register', function (req, res, next) {
-  res.render('register/index.ejs', {title: "register"});
+    res.clearCookie('session_id');
+    res.render('register/index.ejs', {title: "register"});
 });
 
 router.post('/register', function (req, res, next) {
-  console.info(req.body);
-  UserRepository.findByEmailOrLogin(req.body.email
-      || req.body.login).then(value => {
-        if(value == null || value.length == null || value.length == 0) {
-          const sessionId = UserRepository.insert(req.body.login.toLowerCase(),
-              req.body.pass, req.body.avatar || "", req.body.email.toLowerCase());
-          createCookie(res, sessionId);
-          res.status(ResponseStatus.CREATED);
+    console.log(req.body);
+    if (req.body.logic === '' || req.body.pass === '' || req.body.email === '') {
+        res.redirect('/register');
+        return null;
+    }
+    UserRepository.findByEmailAndLogin(req.body.email
+        , req.body.login).then(value => {
+        if (value == null) {
+            const sessionId = UserRepository.insert(req.body.login.toLowerCase(),
+                req.body.pass, req.body.file || "", req.body.email.toLowerCase())
+                .then((user) => {
+                    createCookie(res, user.sessionId);
+                    res.redirect('/');
+                }).catch((error) => {
+                        console.error(error);
+                    }
+                );
+            //res.status(ResponseStatus.CREATED);
         } else {
-          res.status(ResponseStatus.ERROR);
+            res.render('register/index.ejs', {title: "register"});
+            res.status(ResponseStatus.ERROR);
         }
-    res.render('register/index.ejs', {title: "register"});
-  }).catch(error => console.error(error));
+        //redirect
+
+    }).catch(error => console.error(error));
 });
 
 router.get('/:id', function (req, res, next) {
-  res.render('main/index.ejs', {title: "Main"});
+    res.render('main/index.ejs', {title: "Main"});
 });
 
 const createCookie = (res, sessionId) => {
-  res.cookie('session_id', sessionId, {
-    maxAge: 1000 * 60 * 60 * 24 * 30,
-    httpOnly: true,
-    // signed: true
-  });
+    res.cookie('session_id', sessionId, {
+        maxAge: 1000 * 60 * 60 * 24 * 30,
+        httpOnly: true,
+        // signed: true
+    });
 }
 
 module.exports = router;
