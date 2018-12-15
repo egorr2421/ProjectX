@@ -80,9 +80,14 @@ router.post('/register', function (req, res, next) {
     }).catch(error => console.error(error));
 });
 
+router.get('/fight', function (req, res, next) {
+    res.render('fight/index.ejs', {title: "Main"});
+});
+
 router.get('/:id', function (req, res, next) {
     res.render('main/index.ejs', {title: "Main"});
 });
+
 
 const createCookie = (res, sessionId) => {
     res.cookie('session_id', sessionId, {
