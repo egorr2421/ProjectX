@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('IQLab:server');
 var http = require('http');
 var socket = require('socket.io');
+var uuidv4 = require('uuid/v4');
 /**
  * Get port from environment and store in Express.
  */
@@ -92,40 +93,53 @@ function onListening() {
 
 //web socket
 const UserRepository = require('../repository/UsersRepository');
-var battleLogs = require('../routes/data/battleLogs');
+const battleLogs = require('../routes/data/battleLogs');
+const Constants = require('../constants/Constants');
+const cookieParser = require('cookie-parser');
 
 io.on('connection', function (socket) {
     socket.send("hi");
 
     socket.on('choose', function (data) {
-        UserRepository.findBySessionId(data.req).then((value) => {
-            if (value != null) {
-                data.req = value.dataValues;
-                UserRepository.findByEmailOrLogin(data.target).then((target) => {
-                    if (target != null) {
-                        data.target = target.dataValues;
+        console.info('Choose: ' + JSON.stringify(data));
+        UserRepository.findBySessionId(data.req).then(initiator => {
+            console.log(initiator.id);
+            if (initiator != null) {
+                data.req.id = initiator.id;
+                UserRepository.findByEmailOrLogin(data.target).then(enemy => {
+                    console.log(enemy.id);
+                    if (enemy != null) {
+                        data.target.id = enemy.id;
+                        data.target.login = enemy.login;
+                        data.target.email = enemy.email;
                         socket.broadcast.emit('find', data);
                     }
                 });
-
             }
         });
     });
 
     socket.on('readyToFight', function (data) {
-        battleLogs.addBattle(data.target.sessionId + data.req.sessionId, data.target, data.req);
-        io.emit('toFight', battleLogs.getBattle(data.target.sessionId + data.req.sessionId));
+        console.info('Ready to fight: ' + JSON.stringify(data));
+        const uuid = uuidv4();
+        io.emit('toFight', battleLogs.addBattle(uuid, data.target, data.req));
+    });
+
+    socket.emit('someData', 'data');
+
+    socket.on('disconnect', () => {
+        console.info(`User disconnected`);
     });
 
     socket.on('readyToStartBattle', function (data) {
         battleLogs.getBattle(data.id);
-        if (battleLogs.getBattle(data.id).userFirst.sessionId === data.iam) {
+        if (battleLogs.getBattle(data.id).userFirst.id === data.iam) {
             battleLogs.getBattle(data.id).userFirst.ready = true;
             console.log('user f');
             battleLogs.addBattleField(data.id, data.battleField);
             console.log(battleLogs.getBattle(data.id).battleField);
         }
-        if (battleLogs.getBattle(data.id).userSecond.sessionId === data.iam) {
+        if (battleLogs.getBattle(data.id).userSecond.id === data.iam) {
             battleLogs.getBattle(data.id).userSecond.ready = true;
             console.log('user s');
             battleLogs.addBattleField(data.id, data.battleField);
@@ -136,24 +150,27 @@ io.on('connection', function (socket) {
             io.emit('startBattle', battleLogs.getBattle(data.id));
         }
     });
+
     socket.on('nextStep', function (data) {
         let temp = null;
-        if(data.iam === battleLogs.getBattle(data.id).userFirst.sessionId){
-            temp = battleLogs.getBattle(data.id).userSecond.sessionId;
-        }else {
-            temp =   battleLogs.getBattle(data.id).userFirst.sessionId;
+        if (data.iam === battleLogs.getBattle(data.id).userFirst.id) {
+            temp = battleLogs.getBattle(data.id).userSecond.id;
+        } else {
+            temp = battleLogs.getBattle(data.id).userFirst.id;
         }
-        battleLogs.nextBattleField(data.id,data.battleField);
-        io.emit('accesStep', {
+        battleLogs.nextBattleField(data.id, data.battleField);
+        io.emit('accessStep', {
             id: battleLogs.getBattle(data.id).id,
-            acces: temp,
-            battleField : battleLogs.getBattle(data.id).battleField
+            access: temp,
+            battleField: battleLogs.getBattle(data.id).battleField
         });
     });
+
     socket.on('disconnect', function () {
-        console.log("user disconnect");
+        console.info(`User disconnect`);
     });
-    socket.on('win',function (data) {
-        io.emit('lose',data);
+
+    socket.on('win', function (data) {
+        io.emit('lose', data);
     });
 });

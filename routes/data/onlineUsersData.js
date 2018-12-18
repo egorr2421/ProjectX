@@ -1,21 +1,23 @@
-var addUserToOnline = function (user) {
+'use strict';
+
+const addUserToOnline = function (user) {
     user.date = new Date().getTime();
-    onlineUsersData[user.sessionId] = user;
+    onlineUsersData[user.id] = user;
 };
-var getUser = function (sessionId) {
-    return onlineUsersData[sessionId];
-};
-
-var deleteUser = function (sessionId) {
-    delete onlineUsersData[sessionId];
+const getUser = function (id) {
+    return onlineUsersData[id];
 };
 
-var upDate = function (sessionId) {
-    if(sessionId in onlineUsersData)
-    onlineUsersData[sessionId].date = new Date().getTime();
+const deleteUser = function (id) {
+    delete onlineUsersData[id];
 };
 
-var onlineUsersData = {};
+const upDate = function (id) {
+    if(id in onlineUsersData)
+        onlineUsersData[id].date = new Date().getTime();
+};
+
+const onlineUsersData = {};
 
 module.exports.getUser = getUser;
 module.exports.upDate = upDate;

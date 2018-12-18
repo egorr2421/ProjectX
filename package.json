@@ -1,9 +1,9 @@
 {
-  "name": "IQLab",
+  "name": "X",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "migrate": "cd flyway-5.2.4 && flyway -X -configFiles=conf/flyway.conf migrate && cd ..",
+    "migrate": "flyway -X -configFiles=conf/flyway.conf migrate",
     "start": "npm run migrate && node ./bin/www"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "debug": "~2.2.0",
     "ejs": "^2.6.1",
     "express": "~4.13.4",
+    "express-paginate": "^1.0.0",
     "flywaydb-cli": "^0.5.1",
     "jade": "~1.11.0",
     "morgan": "~1.7.0",

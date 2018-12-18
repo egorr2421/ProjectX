@@ -1,21 +1,26 @@
-var addBattle = function (id, userFirst, userSecond) {
-    userFirst.ready = false;
-    userSecond.ready = false;
-    battle = {
+'use strict';
+
+const addBattle = (id, userFirst, userSecond) => {
+    const log = {
         userFirst: userFirst,
         userSecond: userSecond,
-        id:id,
-        battleField:null
+        id: id,
+        battleField: null
     };
-    battleLogs[id] = battle;
+    log.userFirst.ready = false;
+    log.userSecond.ready = false;
+    battleLogs[id] = log;
+    return log;
 };
 
-var addBattleField = function (id,mas) {
+const getBattle = (id) => battleLogs[id];
+
+const addBattleField = function (id, mas) {
     console.log(getBattle(id).battleField);
-    if(getBattle(id).battleField ===null){
+    if (getBattle(id).battleField === null) {
         getBattle(id).battleField = mas;
-    console.log(getBattle(id).battleField);
-    }else{
+        console.log(getBattle(id).battleField);
+    } else {
         for (let i = 0; i < getBattle(id).battleField.length; i++) {
             for (let y = 0; y < getBattle(id).battleField[i].length; y++) {
                 if (getBattle(id).battleField[i][y] === 0) {
@@ -26,15 +31,11 @@ var addBattleField = function (id,mas) {
     }
 };
 
-var nextBattleField = function (id,mas) {
+const nextBattleField = function (id, mas) {
     getBattle(id).battleField = mas;
 };
 
-var getBattle = function (id) {
-    return battleLogs[id];
-};
-
-var battleLogs = {};
+const battleLogs = {};
 
 module.exports.addBattle = addBattle;
 module.exports.getBattle = getBattle;

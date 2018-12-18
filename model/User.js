@@ -1,46 +1,46 @@
-'use strict'
+'use strict';
 
 const Sequelize = require('sequelize');
 const sequelize = require('../repository/connection');
 const UserStatus = require('./UserStatus');
 const uuidv4 = require('uuid/v4');
 
-const User = sequelize.define('user', {
+const User = require('../repository/connection').define('user', {
     id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
         field: 'id'
     },
     login: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
         field: 'login'
     },
     password: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
         field: 'password'
     },
     avatar: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
         field: 'avatar'
     },
     email: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
         notNull: true,
         isEmail: true,
         field: 'email'
     },
     state: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
         defaultValue: UserStatus.ONLINE,
         field: 'state'
     },
     sessionId: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
         field: 'session_id'
     }
@@ -66,6 +66,6 @@ const User = sequelize.define('user', {
 });
 
 User.beforeValidate((user, options) => user.sessionId =
-    Buffer.from(user.email + "/" + uuidv4.toString()).toString('base64'));
+    Buffer.from(user.email + "/" + uuidv4()).toString('base64'));
 
 module.exports = User;

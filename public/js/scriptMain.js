@@ -13,6 +13,7 @@ $(document).ready(function () {
                 $('.main_table_body').append(tr);
             }
             $('.user').click(function () {
+                console.log('user choose click');
                 socket.emit('choose', {target: $(this).data('userLogin'), req: jQuery.cookie('session_id')});
             });
         }).fail(function () {
@@ -21,41 +22,47 @@ $(document).ready(function () {
     };
     getOnline();
     setInterval(getOnline, 10000);
-
     ///socket
-    var socket = io.connect('http://192.168.1.101:3000');
+    var socket = io.connect('http://192.168.1.5:3000');
 
     socket.on('message', function (data) {
         console.log(data);
 
     });
+
     socket.on('somedata', function (data) {
         console.log(data);
     });
+
     socket.on('find', function (data) {
-        if (data.target.sessionId == jQuery.cookie('session_id')  &&  data.req.sessionId != jQuery.cookie('session_id')) {
-            swal({
-                title: "Would you like to fight with " + data.req.login + "?",
-                text: "Once deleted, you will not be able to recover this imaginary file!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                    socket.emit('readyToFight',data);
-                } else {
+        jQuery.get('/current', {}, function (currentUser) {
+            console.log(current);
+            if (data.target.id == currentUser.id && data.req.id != currentUser.id) {
+                swal({
+                    title: "Would you like to fight with " + data.req.login + "?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        socket.emit('readyToFight', data);
+                    } else {
 
-                }
-            });
+                    }
+                });
 
-        }//bug
-        console.log(data);
+            }//bug
+            console.log(data);
+        });
     });
 
     socket.on('toFight', function (data) {
-      if(data.userFirst.sessionId == jQuery.cookie('session_id') || data.userSecond.sessionId == jQuery.cookie('session_id')){
-          console.log(data);
-          $.redirect('/fight', {battle: JSON.stringify(data)},'POST');
-      }
+        jQuery.get('/current', {}, function (currentUser) {
+            if (data.userFirst.id == currentUser.id || data.userSecond.id == currentUser.id) {
+                console.log(data);
+                $.redirect('/fight', {battle: JSON.stringify(data)}, 'POST');
+            }
+        })
     });
 });

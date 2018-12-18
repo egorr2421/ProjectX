@@ -6,6 +6,6 @@ module.exports = Object.freeze({
     ERROR: Number(400), 
     NOT_FOUND: Number(404), 
     INTERNAL_ERROR: Number(500),
-    UNATHORIZED: Number(401)
+    UNAUTHORIZED: Number(401)
 });
 

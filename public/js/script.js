@@ -6,7 +6,7 @@ $(document).ready(function () {
     let mas = [];
     let current = 1;
     let prise = 7;
-    let acces = false;
+    let access = false;
     let player = '';
     var nextButton = document.getElementById("button-start");
     let point = {
@@ -21,48 +21,54 @@ $(document).ready(function () {
     };
 
     function beforeStart(event, unt) {
-        //init
-        if (JSON.parse(jQuery.cookie('battle')).userFirst.sessionId == jQuery.cookie('session_id')) player = 'player1';
-        if (JSON.parse(jQuery.cookie('battle')).userSecond.sessionId == jQuery.cookie('session_id')) player = 'player2';
-        //init
-        let x = event.offsetX;
-        let y = event.offsetY;
-        console.log(x + " " + y);
-        x = Math.floor(x / 50);
-        y = Math.floor(y / 50);
-        console.log(x + " " + y);
-        let temp = document.getElementById("resulte");
-        let temp1 = document.getElementById("count-" + target);
-        if ((y > 10 && player == 'player2') || (y < 3 && player == 'player1')) {
-            if (mas[y][x].id == unt) {
-                if (unt == 5)
-                    kingApp = true;
-                console.log("_");
-                cnx.clearRect(x * 50, y * 50, 50, 50);
-                mas[y][x] = 0;
-                temp.innerText = parseFloat(temp.innerText) + prise;
-                temp1.innerText = parseFloat(temp1.innerText) - 1;
-            } else {
-                if (mas[y][x] == 0) {
-                    if (temp.innerText - prise >= 0 && target != "king") {
-                        temp.innerText -= prise;
-                        if (unt == 1) mas[y][x] = new dwarf(target, unt);
-                        if (unt == 4) mas[y][x] = new energy(target, unt);
-                        if (unt == 2) mas[y][x] = new hourse(target, unt);
-                        if (unt == 3) mas[y][x] = new pocket(target, unt);
-                        temp1.innerText = parseFloat(temp1.innerText) + 1;
-                    }
-                    if (kingApp == true && target == "king") {
-                        mas[y][x] = new king(target, unt);
-                        temp1.innerText = parseFloat(temp1.innerText) + 1;
-                        kingApp = false;
-                    }
-                    mas[y][x].player = player;
+        jQuery.get('/current', {}, function (currentUser) {
+            //init
+            if (JSON.parse(jQuery.cookie('battle')).userFirst.id == currentUser.id) {
+                player = 'player1';
+            }
+            if (JSON.parse(jQuery.cookie('battle')).userSecond.id == currentUser.id) {
+                player = 'player2';
+            }
+            //init
+            let x = event.offsetX;
+            let y = event.offsetY;
+            console.log(x + " " + y);
+            x = Math.floor(x / 50);
+            y = Math.floor(y / 50);
+            console.log(x + " " + y);
+            let temp = document.getElementById("resulte");
+            let temp1 = document.getElementById("count-" + target);
+            if ((y > 10 && player == 'player2') || (y < 3 && player == 'player1')) {
+                if (mas[y][x].id == unt) {
+                    if (unt == 5)
+                        kingApp = true;
+                    console.log("_");
+                    cnx.clearRect(x * 50, y * 50, 50, 50);
+                    mas[y][x] = 0;
+                    temp.innerText = parseFloat(temp.innerText) + prise;
+                    temp1.innerText = parseFloat(temp1.innerText) - 1;
+                } else {
+                    if (mas[y][x] == 0) {
+                        if (temp.innerText - prise >= 0 && target != "king") {
+                            temp.innerText -= prise;
+                            if (unt == 1) mas[y][x] = new dwarf(target, unt);
+                            if (unt == 4) mas[y][x] = new energy(target, unt);
+                            if (unt == 2) mas[y][x] = new hourse(target, unt);
+                            if (unt == 3) mas[y][x] = new pocket(target, unt);
+                            temp1.innerText = parseFloat(temp1.innerText) + 1;
+                        }
+                        if (kingApp == true && target == "king") {
+                            mas[y][x] = new king(target, unt);
+                            temp1.innerText = parseFloat(temp1.innerText) + 1;
+                            kingApp = false;
+                        }
+                        mas[y][x].player = player;
 
+                    }
                 }
             }
-        }
-        drow();
+            drow();
+        });
     }
 
     function gameLM(event) {
@@ -119,7 +125,7 @@ $(document).ready(function () {
         current = 0;
 
         drow();
-    };
+    }
 
     function inint() {
         for (let i = 0; i <= h; i++) {
@@ -140,24 +146,24 @@ $(document).ready(function () {
                 cnx.moveTo(y * 50, 0);
                 cnx.lineTo(y * 50, 700);
                 if (mas[i][y].heal <= 0) {
-                    if(mas[i][y].id ==5){
-                        if(mas[i][y].player == player){
+                    if (mas[i][y].id == 5) {
+                        if (mas[i][y].player == player) {
                             swal("Sorry, but you lose", {
                                 buttons: {
                                     cancel: "OK",
                                 },
                             }).then(() => {
-                                socket.emit('win',JSON.parse(jQuery.cookie('battle')).id);
-                                $.redirect('/',{},'GET');
-                                });
-                        }else {
+                                socket.emit('win', JSON.parse(jQuery.cookie('battle')).id);
+                                $.redirect('/', {}, 'GET');
+                            });
+                        } else {
                             swal("You win", {
                                 buttons: {
                                     cancel: "OK",
                                 },
                             }).then(() => {
-                                socket.emit('win',JSON.parse(jQuery.cookie('battle')).id);
-                                $.redirect('/',{},'GET');
+                                socket.emit('win', JSON.parse(jQuery.cookie('battle')).id);
+                                $.redirect('/', {}, 'GET');
                             });
                         }
                     }
@@ -230,18 +236,20 @@ $(document).ready(function () {
         for (let i = 0; i <= h; i++) {
             for (let y = 0; y <= w; y++) {
                 if (mas[i][y].id === 5) {
-                    acces = true;
+                    access = true;
                 }
             }
         }
-        if (!acces) {
+        if (!access) {
             swal('should be king!!');
             return null;
         }
-        socket.emit('readyToStartBattle', {
-            id: JSON.parse(jQuery.cookie('battle')).id,
-            iam: jQuery.cookie('session_id'),
-            battleField: mas
+        jQuery.get('/current', {}, function (currentUser) {
+            socket.emit('readyToStartBattle', {
+                id: JSON.parse(jQuery.cookie('battle')).id,
+                iam: currentUser.id,
+                battleField: mas
+            });
         });
         var units = this;
         socket.on('startBattle', function (data) {
@@ -264,17 +272,17 @@ $(document).ready(function () {
                 gameLM(event, current);
             };
             units.onclick = next;
-            if(player != "player1"){
+            if (player != "player1") {
                 $(units).prop("disabled", true);
             }
-        drow();
+            drow();
         });
     };
 
     function next() {
         for (let i = 0; i <= h; i++) {
             for (let y = 0; y <= w; y++) {
-                if (mas[i][y] && acces) {
+                if (mas[i][y] && access) {
                     mas[i][y].activeUnit();
                     drow();
                 }
@@ -282,57 +290,72 @@ $(document).ready(function () {
         }
         $(this).prop("disabled", true);
         nextButton = this;
-        socket.emit('nextStep', {
-            id: JSON.parse(jQuery.cookie('battle')).id,
-            iam: jQuery.cookie('session_id'),
-            battleField: mas
+        jQuery.get('/current', {}, function (currentUser) {
+            socket.emit('nextStep', {
+                id: JSON.parse(jQuery.cookie('battle')).id,
+                iam: currentUser.id,
+                battleField: mas
+            });
         });
     }
 
     console.log(JSON.parse(jQuery.cookie('battle')));
 
     ///socket
-    var socket = io.connect('http://192.168.1.101:3000');
+    var socket = io.connect('http://192.168.1.5:3000');
 
     socket.on('message', function (data) {
         console.log(data);
     });
-    socket.on('lose',function(data){
+
+    socket.on('lose', function (data) {
         console.log('lose');
-        if(data === JSON.parse(jQuery.cookie('battle')).id)
-    {
-        swal("Sorry, but you lose", {
-            buttons: {
-                cancel: "OK",
-            },
-        }).then(() => {
-            $.redirect('/', {}, 'GET');
-        });
-    }
+        if (data === JSON.parse(jQuery.cookie('battle')).id) {
+            swal("Sorry, but you lose", {
+                buttons: {
+                    cancel: "OK",
+                },
+            }).then(() => {
+                $.redirect('/', {}, 'GET');
+            });
+        }
     });
-    socket.on('accesStep', function (data) {
+    socket.on('accessStep', function (data) {
         if (data.id != JSON.parse(jQuery.cookie('battle')).id) {
             return null;
         }
         parseBattleFeild(data.battleField);
         mas = data.battleField;
         console.log(mas);
-        if ( data.acces ==jQuery.cookie('session_id')) {
-            $(nextButton).prop("disabled", false);
-        }
+        jQuery.get('/current', {}, function (currentUser) {
+            if (data.access == currentUser.id) {
+                $(nextButton).prop("disabled", false);
+            }
+        });
         drow();
     });
+
     function parseBattleFeild(battle) {
         for (let i = 0; i <= h; i++) {
             for (let y = 0; y <= w; y++) {
                 if (battle[i][y] != 0) {
-                    var temp =battle[i][y].player;
-                    var temp2 =battle[i][y].heal;
-                    if (battle[i][y].id == 1) battle[i][y] = new dwarf(battle[i][y].name, battle[i][y].id);
-                    if (battle[i][y].id == 4) battle[i][y] = new energy(battle[i][y].name, battle[i][y].id);
-                    if (battle[i][y].id == 2) battle[i][y] = new hourse(battle[i][y].name, battle[i][y].id);
-                    if (battle[i][y].id == 3) battle[i][y] = new pocket(battle[i][y].name, battle[i][y].id);
-                    if (battle[i][y].id == 5) battle[i][y] = new king(battle[i][y].name, battle[i][y].id);
+                    var temp = battle[i][y].player;
+                    var temp2 = battle[i][y].heal;
+                    if (battle[i][y].id == 1) {
+                        battle[i][y] = new dwarf(battle[i][y].name, battle[i][y].id);
+                    }
+                    if (battle[i][y].id == 4) {
+                        battle[i][y] = new energy(battle[i][y].name, battle[i][y].id);
+                    }
+                    if (battle[i][y].id == 2) {
+                        battle[i][y] = new hourse(battle[i][y].name, battle[i][y].id);
+                    }
+                    if (battle[i][y].id == 3) {
+                        battle[i][y] = new pocket(battle[i][y].name, battle[i][y].id);
+                    }
+                    if (battle[i][y].id == 5) {
+                        battle[i][y] = new king(battle[i][y].name, battle[i][y].id);
+                    }
                     battle[i][y].player = temp;
                     battle[i][y].heal = temp2;
                 }
