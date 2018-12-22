@@ -1,10 +1,12 @@
 'use strict';
 
 const UserRepository = require('../repository/UsersRepository');
-const ResponseStatus = require('./response/ResponseStatus')
+const ResponseStatus = require('./response/ResponseStatus');
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
+var onlineUsers = require('./data/onlineUsersData');
+
 
 router.get('/', function (req, res, next) {
     UserRepository.findBySessionId(req.cookies.session_id)
@@ -14,7 +16,9 @@ router.get('/', function (req, res, next) {
                 return null;
             }
             if (req.cookies.session_id === value.dataValues.sessionId) {
-                console.log("+++");
+                onlineUsers.addUserToOnline(value.dataValues);
+                // console.log(onlineUsers.getAllUsers);
+                // console.log(onlineUsers.getUser(value.dataValues.sessionId));
                 res.render('main/index.ejs', {title: "Main"});
             } else {
                 res.redirect('/login');
@@ -80,13 +84,11 @@ router.post('/register', function (req, res, next) {
     }).catch(error => console.error(error));
 });
 
+
 router.get('/fight', function (req, res, next) {
     res.render('fight/index.ejs', {title: "Main"});
 });
 
-router.get('/:id', function (req, res, next) {
-    res.render('main/index.ejs', {title: "Main"});
-});
 
 
 const createCookie = (res, sessionId) => {

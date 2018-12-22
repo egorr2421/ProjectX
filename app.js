@@ -12,7 +12,8 @@ var routes = require('./routes/index');
 // var lang_list = require('./routes/lang_list');
 // var lang_details = require('./routes/lang_details');
 //task
-var car_list = require('./routes/car_list');
+// var car_list = require('./routes/car_list');
+var onlineUsers = require('./routes/onlineUsers');
 
 var app = express();
 // var app = function () {
@@ -53,7 +54,7 @@ app.use(function (req, res, next) {
 
 app.use('/', routes);
 // app.use('/lang_list', lang_list);
-app.use('/car_list', car_list);
+app.use('/online_users', onlineUsers);
 // app.use('/lang_details', lang_details);
 
 // catch 404 and forward to error handler

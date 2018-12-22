@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 module.exports = Object.freeze({
     OK: Number(200), 
