@@ -23,7 +23,7 @@ $(document).ready(function () {
     setInterval(getOnline, 10000);
 
     ///socket
-    var socket = io.connect('http://localhost:3000');
+    var socket = io.connect('http://192.168.1.101:3000');
 
     socket.on('message', function (data) {
         console.log(data);
@@ -33,8 +33,7 @@ $(document).ready(function () {
         console.log(data);
     });
     socket.on('find', function (data) {
-        if (data.target.sessionId == jQuery.cookie('session_id') /* &&  data.req.sessionId != jQuery.cookie('session_id')*/) {
-            console.log("++++");
+        if (data.target.sessionId == jQuery.cookie('session_id')  &&  data.req.sessionId != jQuery.cookie('session_id')) {
             swal({
                 title: "Would you like to fight with " + data.req.login + "?",
                 text: "Once deleted, you will not be able to recover this imaginary file!",

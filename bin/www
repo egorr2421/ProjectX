@@ -101,7 +101,7 @@ io.on('connection', function (socket) {
                 UserRepository.findByEmailOrLogin(data.target).then((target) => {
                     if (target != null) {
                         data.target = target.dataValues;
-                        socket.emit('find', data);
+                        socket.broadcast.emit('find', data);
                     }
                 });
 
@@ -110,7 +110,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('readyToFight', function (data) {
-        socket.emit('toFight',data);
+        io.emit('toFight',data);
     });
 
     socket.emit('someData', 'dara');
