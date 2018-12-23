@@ -53,8 +53,9 @@ $(document).ready(function () {
     });
 
     socket.on('toFight', function (data) {
-      if(data.target.sessionId == jQuery.cookie('session_id') || data.req.sessionId == jQuery.cookie('session_id')){
-          swal("Fight");
+      if(data.userFirst.sessionId == jQuery.cookie('session_id') || data.userSecond.sessionId == jQuery.cookie('session_id')){
+          console.log(data);
+          $.redirect('/fight', {battle: JSON.stringify(data)},'POST');
       }
     });
 });

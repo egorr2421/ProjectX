@@ -89,8 +89,12 @@ function onListening() {
     debug('Listening on ' + bind);
 }
 
+
+
 //web socket
 const UserRepository = require('../repository/UsersRepository');
+var battleLogs = require('../routes/data/battleLogs');
+
 io.on('connection', function (socket) {
     socket.send("hi");
 
@@ -110,7 +114,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('readyToFight', function (data) {
-        io.emit('toFight',data);
+        battleLogs.addBattle(data.target.sessionId+data.req.sessionId,data.target,data.req);
+        io.emit('toFight',battleLogs.getBattle(data.target.sessionId+data.req.sessionId));
     });
 
     socket.emit('someData', 'dara');

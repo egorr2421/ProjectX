@@ -85,8 +85,20 @@ router.post('/register', function (req, res, next) {
 });
 
 
-router.get('/fight', function (req, res, next) {
-    res.render('fight/index.ejs', {title: "Main"});
+router.post('/fight', function (req, res, next) {
+    console.log(JSON.parse(req.body.battle));
+    UserRepository.findBySessionId(req.cookies.session_id)
+        .then(value => {
+            if (value === null) {
+                res.redirect('/login');
+                return null;
+            }
+            if (req.cookies.session_id === value.dataValues.sessionId) {
+                res.render('fight/index.ejs', {title: "Fight"});
+            } else {
+                res.redirect('/login');
+            }
+        });
 });
 
 
