@@ -9,13 +9,11 @@ var bodyParser = require('body-parser');
 const ResponseStatus = require('./routes/response/ResponseStatus');
 
 var routes = require('./routes/index');
-// var lang_list = require('./routes/lang_list');
-// var lang_details = require('./routes/lang_details');
-//task
-// var car_list = require('./routes/car_list');
+
 var onlineUsers = require('./routes/onlineUsers');
 
 var app = express();
+
 // var app = function () {
 //     return express();
 // };
