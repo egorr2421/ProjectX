@@ -9,23 +9,24 @@
     <link rel="stylesheet" type="text/css" href="css/styleFight.css">
 </head>
 <body>
-					<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-			  <a class="navbar-brand" href="#"><img src="barbute.svg" width="30"></a>
-			  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			    <span class="navbar-toggler-icon"></span>
-			  </button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <a class="navbar-brand" href="#"><img src="barbute.svg" width="30"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-			  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-			    <ul class="navbar-nav mr-auto">
-			       <li class="nav-item active">
-                		<a class="nav-link" href="#">Главноя</a>
-            		</li>
-            		<li class="nav-item ">
-                		<a class="nav-link " href="/login">Выход</a>
-            		</li>
-			    </ul>
-			  </div>
-			</nav>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Главноя</a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link " href="/login">Выход</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 <div class="main">
 
     <canvas id="canvas" width="700" height="700"></canvas>
@@ -50,15 +51,16 @@
     </div>
 </div>
 <div class="texture">
-<img class="unit" id="dwarf-t" src="css/image/unit/dwarf-face.svg">
-<img class="unit" id="hourse-t" src="css/image/unit/visored-helm.svg">
-<img class="unit" id="pocket-t" src="css/image/unit/pocket-bow.svg">
-<img class="unit" id="energy-t" src="css/image/unit/energy-sword.svg">
-<img class="unit" id="king-t" src="css/image/unit/chess-king.svg">
+    <img class="unit" id="dwarf-t" src="css/image/unit/dwarf-face.svg">
+    <img class="unit" id="hourse-t" src="css/image/unit/visored-helm.svg">
+    <img class="unit" id="pocket-t" src="css/image/unit/pocket-bow.svg">
+    <img class="unit" id="energy-t" src="css/image/unit/energy-sword.svg">
+    <img class="unit" id="king-t" src="css/image/unit/chess-king.svg">
 </div>
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
@@ -68,7 +70,11 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
-            <script src="js/unit.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="js/jquery.redirect.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script src="js/unit.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

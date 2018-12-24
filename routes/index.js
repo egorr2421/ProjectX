@@ -87,6 +87,7 @@ router.post('/register', function (req, res, next) {
 
 router.post('/fight', function (req, res, next) {
     console.log(JSON.parse(req.body.battle));
+    createCookie(res,req.body.battle,'battle');
     UserRepository.findBySessionId(req.cookies.session_id)
         .then(value => {
             if (value === null) {
@@ -103,12 +104,12 @@ router.post('/fight', function (req, res, next) {
 
 
 
-const createCookie = (res, sessionId) => {
-    res.cookie('session_id', sessionId, {
+const createCookie = (res, sessionId,name = 'session_id') => {
+    res.cookie(name, sessionId, {
         maxAge: 1000 * 60 * 60 * 24 * 30,
         httpOnly: false,
         // signed: true
     });
-}
+};
 
 module.exports = router;
